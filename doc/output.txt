@@ -1,0 +1,44 @@
+Playlist: Title playlist
+ 1. Title_0(1990) - Artist_0 - 0:10:00
+ 2. Title_1(1991) - Artist_1 - 0:11:00
+ 3. Title_2(1992) - Artist_2 - 0:12:00
+ 4. Title_3(1993) - Artist_3 - 0:13:00
+ 5. Title_4(1994) - Artist_0 - 0:14:00
+ 6. Title_5(1995) - Artist_1 - 0:15:00
+ 7. Title_6(1996) - Artist_2 - 0:16:00
+ 8. Title_7(1997) - Artist_3 - 0:17:00
+ 9. Title_8(1998) - Artist_0 - 0:18:00
+10. Title_9(1990) - Artist_1 - 0:10:00
+11. Title_10(1991) - Artist_2 - 0:11:00
+12. Title_11(1992) - Artist_3 - 0:12:00
+13. Title_12(1993) - Artist_0 - 0:13:00
+14. Title_13(1994) - Artist_1 - 0:14:00
+15. Title_14(1995) - Artist_2 - 0:15:00
+16. Title_15(1996) - Artist_3 - 0:16:00
+17. Title_16(1997) - Artist_0 - 0:17:00
+18. Title_17(1998) - Artist_1 - 0:18:00
+19. Title_18(1990) - Artist_2 - 0:10:00
+20. Title_19(1991) - Artist_3 - 0:11:00
+21. Title_20(1992) - Artist_0 - 0:12:00
+22. Title_21(1993) - Artist_1 - 0:13:00
+23. Title_22(1994) - Artist_2 - 0:14:00
+24. Title_23(1995) - Artist_3 - 0:15:00
+25. Title_24(1996) - Artist_0 - 0:16:00
+26. Title_25(1997) - Artist_1 - 0:17:00
+27. Title_26(1998) - Artist_2 - 0:18:00
+28. Title_27(1990) - Artist_3 - 0:10:00
+29. Title_28(1991) - Artist_0 - 0:11:00
+30. Title_29(1992) - Artist_1 - 0:12:00
+
+
+Search: Artist_3 
+ 1. Title_3(1993) - Artist_3 - 0:13:00
+ 2. Title_7(1997) - Artist_3 - 0:17:00
+ 3. Title_11(1992) - Artist_3 - 0:12:00
+ 4. Title_15(1996) - Artist_3 - 0:16:00
+ 5. Title_19(1991) - Artist_3 - 0:11:00
+ 6. Title_23(1995) - Artist_3 - 0:15:00
+ 7. Title_27(1990) - Artist_3 - 0:10:00
+
+
+Total time: 6:51:00
