@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:robot_dreams_logi/internal/application.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(Application());
 }
 
 class MyApp extends StatelessWidget {
