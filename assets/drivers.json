@@ -1,0 +1,26 @@
+[
+  {
+    "key": "driver_1",
+    "name": "Vagif Taghiyev",
+    "email": "test@gmail.com",
+    "pass": "12345"
+  },
+  {
+    "key": "driver_2",
+    "name": "Ion Gudumas",
+    "email": "eduardn16@gmail.com",
+    "pass": "12345"
+  },
+  {
+    "key": "driver_3",
+    "name": "Lenny Gorelik",
+    "email": "goreliklenny@gmail.com",
+    "pass": "12345"
+  },
+  {
+    "key": "driver_4",
+    "name": "Lemessa Feyisa",
+    "email": "lfeyisa@yahoo.com",
+    "pass": "12345"
+  }
+]

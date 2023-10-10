@@ -9,5 +9,17 @@ class Order {
   String get number => _strNumber;
   String get name => _strName;
   String get note => _strNote;
+/*
+  factory Order.fromJson(Map<String, dynamic> json) {
+    return Order(
+      _
+      id: json['id'],
+      name: json['name'],
+      price: json['price'].toDouble(),
+    );
+  }
+  */
+
 
 }
+

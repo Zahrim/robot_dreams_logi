@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:robot_dreams_logi/domain/order.dart';
+//import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:robot_dreams_logi/domain/models/order.dart';
 
 class OrderListPage extends StatefulWidget {
   const OrderListPage({super.key, required this.title});
@@ -29,7 +30,7 @@ class _OrderListPageState extends State<OrderListPage> {
   */
   void _changeView(value) {
     setState(() {
-      _isSwitched = value;
+      _isSwitched = value ?? false;
     });
     _strTypeView = (_isSwitched) ? 'list' : 'grid';
   }
@@ -55,8 +56,8 @@ class _OrderListPageState extends State<OrderListPage> {
       background: Container(
         alignment: Alignment.center,
         child: const Icon(
-          Icons.delete,
-          color: Colors.black
+          CupertinoIcons.delete,
+          color: CupertinoColors.black
         ),
       ),
       child: Container(
@@ -97,7 +98,7 @@ class _OrderListPageState extends State<OrderListPage> {
           ),
           itemCount: _listOrder.length,
           itemBuilder: (context, index) {
-            return Card(
+            return Container(
               child: _containerItemOrder(index, _listOrder[index])
             );
           }
@@ -111,21 +112,23 @@ class _OrderListPageState extends State<OrderListPage> {
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title)
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+          middle: Text(widget.title)
       ),
-      body: Padding(
+      child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Column(
           children: [
             Row(
               children: [
                 const Text('Is ListView? '),
-                Switch(
+                CupertinoSwitch(
                   value: _isSwitched,
+                    activeColor: CupertinoColors.activeBlue,
                   onChanged: _changeView
                 ),
+
               ],
             ),
             Expanded(
