@@ -63,7 +63,7 @@ class _OrderListPageState extends State<OrderListPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('No: ${itemOrder.number}', style: const TextStyle(fontSize: 22)),
-            Text('Name: ${itemOrder.name}', style: const TextStyle(fontSize: 18))
+            //Text('Name: ${itemOrder.name}', style: const TextStyle(fontSize: 18))
           ]
         )
       )
