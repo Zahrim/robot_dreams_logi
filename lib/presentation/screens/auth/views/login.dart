@@ -5,10 +5,7 @@ import 'package:robot_dreams_logi/domain/models/driver.dart';
 import 'package:robot_dreams_logi/presentation/widgets/widgets.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({
-    super.key,
-    required this.title
-  });
+  const LoginScreen({super.key, required this.title});
 
   final String title;
 
@@ -17,50 +14,40 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
   void _showError(String strTitle, String strMessage) {
     showCupertinoModalPopup(
-      context: context,
-      builder: (BuildContext context) => ErrorMessage(
-        title: strTitle,
-        message: strMessage
-      )
-    );
+        context: context,
+        builder: (BuildContext context) =>
+            ErrorMessage(title: strTitle, message: strMessage));
   }
 
-
-
   void _onPressedSingIn() async {
-
     String strEmail = _controllerEmail.text;
     String strPassword = _controllerPassword.text;
 
     final List<Driver> lsDiver = await loadDrivers();
 
-    List<Driver> lsDriverResult = lsDiver.where((element) => (element.email == strEmail)).toList();
+    List<Driver> lsDriverResult =
+        lsDiver.where((element) => (element.email == strEmail)).toList();
 
     if (lsDriverResult.isNotEmpty) {
-
-      lsDriverResult = lsDiver.where((element) => (element.pass == strPassword)).toList();
+      lsDriverResult =
+          lsDiver.where((element) => (element.pass == strPassword)).toList();
       if (lsDriverResult.isNotEmpty) {
-
         String strTitle = '${widget.title}: ${lsDriverResult[0].name}';
         if (!context.mounted) return;
         Navigator.of(context).push(
-            CupertinoPageRoute(
-                builder: (context) => OrderListPage(title: strTitle)
-            )
+          CupertinoPageRoute(
+            builder: (context) => OrderListPage(title: strTitle),
+          ),
         );
-
-      }
-      else {
+      } else {
         _showError("Error", 'Bad password');
       }
-    }
-    else {
+    } else {
       _showError("Error", 'Invalid email');
     }
   }
@@ -75,9 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: Text(widget.title)
-      ),
+      navigationBar: CupertinoNavigationBar(middle: Text(widget.title)),
       child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -90,17 +75,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   CupertinoTextField(
                     controller: _controllerEmail,
                     textInputAction: TextInputAction.next,
-
                     keyboardType: TextInputType.emailAddress,
                     placeholder: 'Email',
                     decoration: BoxDecoration(
                       color: CupertinoColors.extraLightBackgroundGray,
                       border: Border.all(
                         color: CupertinoColors.lightBackgroundGray,
-                        width: 2
+                        width: 2,
                       ),
-                      borderRadius: BorderRadius.circular(10)
-                    )
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
                   const SizedBox(
                     height: 10,
@@ -114,13 +98,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       color: CupertinoColors.extraLightBackgroundGray,
                       border: Border.all(
                         color: CupertinoColors.lightBackgroundGray,
-                        width: 2
+                        width: 2,
                       ),
-                      borderRadius: BorderRadius.circular(10)
-                    )
-                  )
-                ]
-              )
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Padding(
               padding: EdgeInsets.all(25.0),
@@ -129,16 +113,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 children: [
                   CupertinoButton(
                     onPressed: _onPressedSingIn,
-                    child: const Text('Sign in')
-                  )
+                    child: const Text('Sign in'),
+                  ),
                 ],
-              )
-            )
+              ),
+            ),
           ],
-        )
-      )
+        ),
+      ),
     );
   }
-
-
 }
