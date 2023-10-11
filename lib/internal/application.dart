@@ -1,20 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:robot_dreams_logi/presentation/login.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:robot_dreams_logi/presentation/screens/auth/auth.dart';
 
 class Application extends StatelessWidget {
-  final String _title = 'Logi';
 
+  final String _title = 'Logi';
   const Application({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       title: _title,
-      theme: ThemeData(
+      /*theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true
-      ),
-      home: LoginPage(title: _title),
+      ),*/
+      home: LoginScreen(title: _title),
     );
 
   }
