@@ -13,5 +13,3 @@ Future<List<Driver>> loadDrivers() async {
 
   return lsDriver;
 }
-
-

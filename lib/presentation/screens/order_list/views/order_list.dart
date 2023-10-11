@@ -14,11 +14,7 @@ class _OrderListPageState extends State<OrderListPage> {
 
   final List<Order> _listOrder = [];
 
-  _OrderListPageState() {
-    for (int i = 0; i < 30; i++) {
-      _listOrder.add(Order('Number_$i', 'Name_$i', 'Note_$i'));
-    }
-  }
+  
 
   String _strTypeView = 'list';
   bool _isSwitched = true;
@@ -94,14 +90,14 @@ class _OrderListPageState extends State<OrderListPage> {
             crossAxisCount: 2,
             mainAxisSpacing: 5.0,
             crossAxisSpacing: 5.0,
-            mainAxisExtent: 150.0
+            mainAxisExtent: 150.0,
           ),
           itemCount: _listOrder.length,
           itemBuilder: (context, index) {
             return Container(
               child: _containerItemOrder(index, _listOrder[index])
             );
-          }
+          },
         );
       default:
         return ListView().build(context);
