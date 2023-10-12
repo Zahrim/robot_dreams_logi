@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:robot_dreams_logi/domain/models/location.dart';
 
 class Order {
@@ -25,14 +27,12 @@ class Order {
 
   Location get drop => _lDrop;
 
-/*
-  factory Order.fromJson(Map<String, dynamic> json) {
-    return Order(
-      _
-      id: json['id'],
-      name: json['name'],
-      price: json['price'].toDouble(),
-    );
+  factory Order.fromJson(Map<String, dynamic> item) {
+    String ste = "";
+
+    final locationPickUp = Location.fromJson(item["pick_up"]);
+    final locationDrop = Location.fromJson(item["drop"]);
+
+    return Order(item['number'], item['broker'], double.parse(item['weight']), locationPickUp, locationDrop);
   }
-  */
 }

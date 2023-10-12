@@ -1,20 +1,29 @@
-//import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:robot_dreams_logi/domain/models/order.dart';
+import 'package:robot_dreams_logi/presentation/screens/order_list/widgets/widgets.dart';
+import 'package:robot_dreams_logi/presentation/screens/order_list/controllers/controllers.dart';
 
-class OrderListPage extends StatefulWidget {
-  const OrderListPage({super.key, required this.title});
+class OrderListScreen extends StatefulWidget {
+  const OrderListScreen({super.key, required this.title});
+
   final String title;
 
   @override
-  State<OrderListPage> createState() => _OrderListPageState();
+  State<OrderListScreen> createState() => _OrderListScreenState();
 }
 
-class _OrderListPageState extends State<OrderListPage> {
+class _OrderListScreenState extends State<OrderListScreen> {
+  _OrderListScreenState() {
+    loadOrders().then((value) => initOrders(value));
+  }
 
-  final List<Order> _listOrder = [];
+  List<Order> _listOrder = <Order>[];
 
-  
+  void initOrders(List<Order> listOrder) {
+    setState(() {
+      _listOrder = listOrder;
+    });
+  }
 
   String _strTypeView = 'list';
   bool _isSwitched = true;
@@ -52,8 +61,8 @@ class _OrderListPageState extends State<OrderListPage> {
       background: Container(
         alignment: Alignment.center,
         child: const Icon(
-          CupertinoIcons.delete,
-          color: CupertinoColors.black
+          Icons.delete,
+          color: Colors.black
         ),
       ),
       child: Container(
@@ -107,7 +116,34 @@ class _OrderListPageState extends State<OrderListPage> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
 
+        title: Text(widget.title),
+      ),
+
+      body: CustomScrollView(
+        slivers: [
+          SliverGrid(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Container(
+                  alignment: Alignment.center,
+                  //color: CupertinoColors.teal[100 * (index % 9)],
+                  child: Text('grid item $index'),
+                );
+              },
+              childCount: 50,
+            ),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+            ),
+          ),
+        ],
+      ),
+    );
+
+/*
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
           middle: Text(widget.title)
@@ -134,5 +170,7 @@ class _OrderListPageState extends State<OrderListPage> {
         )
       ),
     );
+
+    */
   }
 }
