@@ -15,8 +15,8 @@ class Application extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
           useMaterial3: true
       ),*/
-      home: LoginScreen(title: _title),
-      //home: OrderListScreen(title: _title),
+      //home: LoginScreen(title: _title),
+      home: OrderListScreen(title: _title),
     );
 
   }
