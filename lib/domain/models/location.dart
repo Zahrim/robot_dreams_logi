@@ -26,4 +26,8 @@ class Location {
   double get lat => _dLat;
 
   double get lng => _dLng;
+
+  factory Location.fromJson(Map<String, dynamic> item) {
+    return Location(item['zip'], item['state'], item['city'], item['address'], double.parse(item['lat']), double.parse(item['lng']));
+  }
 }

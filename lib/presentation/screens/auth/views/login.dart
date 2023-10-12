@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:robot_dreams_logi/presentation/screens/order_list/order_list.dart';
 import 'package:robot_dreams_logi/presentation/screens/auth/controller/controller.dart';
 import 'package:robot_dreams_logi/domain/models/driver.dart';
@@ -18,7 +18,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _controllerPassword = TextEditingController();
 
   void _showError(String strTitle, String strMessage) {
-    showCupertinoModalPopup(
+    showDialog(
         context: context,
         builder: (BuildContext context) =>
             ErrorMessage(title: strTitle, message: strMessage));
@@ -39,9 +39,10 @@ class _LoginScreenState extends State<LoginScreen> {
       if (lsDriverResult.isNotEmpty) {
         String strTitle = '${widget.title}: ${lsDriverResult[0].name}';
         if (!context.mounted) return;
+
         Navigator.of(context).push(
-          CupertinoPageRoute(
-            builder: (context) => OrderListPage(title: strTitle),
+          MaterialPageRoute(
+            builder: (context) => OrderListScreen(title: strTitle),
           ),
         );
       } else {
@@ -61,9 +62,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(middle: Text(widget.title)),
-      child: SafeArea(
+    return Scaffold(
+      appBar: AppBar(title: Text(widget.title)),
+      body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -72,35 +73,27 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CupertinoTextField(
+                  TextField(
                     controller: _controllerEmail,
                     textInputAction: TextInputAction.next,
                     keyboardType: TextInputType.emailAddress,
-                    placeholder: 'Email',
-                    decoration: BoxDecoration(
-                      color: CupertinoColors.extraLightBackgroundGray,
-                      border: Border.all(
-                        color: CupertinoColors.lightBackgroundGray,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+                    decoration: const InputDecoration(
+                      labelText: 'Email',
+                      icon: Icon(Icons.email),
+                      border: OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(
                     height: 10,
                   ),
-                  CupertinoTextField(
+                  TextField(
                     controller: _controllerPassword,
-                    placeholder: 'Password',
                     obscureText: true,
                     obscuringCharacter: '*',
-                    decoration: BoxDecoration(
-                      color: CupertinoColors.extraLightBackgroundGray,
-                      border: Border.all(
-                        color: CupertinoColors.lightBackgroundGray,
-                        width: 2,
-                      ),
-                      borderRadius: BorderRadius.circular(10),
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      icon: Icon(Icons.password_outlined),
+                      border: OutlineInputBorder(),
                     ),
                   ),
                 ],
@@ -111,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  CupertinoButton(
+                  ElevatedButton(
                     onPressed: _onPressedSingIn,
                     child: const Text('Sign in'),
                   ),
