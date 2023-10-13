@@ -19,9 +19,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void _showError(String strTitle, String strMessage) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) =>
-            ErrorMessage(title: strTitle, message: strMessage));
+      context: context,
+      builder: (BuildContext context) =>
+          InfoMessage(title: strTitle, message: strMessage),
+    );
   }
 
   void _onPressedSingIn() async {

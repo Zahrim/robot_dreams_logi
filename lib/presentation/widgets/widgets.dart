@@ -1,1 +1,1 @@
-export 'package:robot_dreams_logi/presentation/widgets/error_message.dart';
+export 'package:robot_dreams_logi/presentation/widgets/info_message.dart';

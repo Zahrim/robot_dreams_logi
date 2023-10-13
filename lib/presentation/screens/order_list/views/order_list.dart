@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:robot_dreams_logi/domain/models/order.dart';
 import 'package:robot_dreams_logi/presentation/screens/order_list/widgets/widgets.dart';
 import 'package:robot_dreams_logi/presentation/screens/order_list/controllers/controllers.dart';
+import 'package:robot_dreams_logi/presentation/widgets/widgets.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key, required this.title});
 
+  static const String _strAllBroker= 'All Brokers' ;
+
+  String get defaultBroker => _strAllBroker;
+
   final String title;
+  final String broker = _strAllBroker;
 
   @override
   State<OrderListScreen> createState() => _OrderListScreenState();
@@ -17,160 +24,269 @@ class _OrderListScreenState extends State<OrderListScreen> {
     loadOrders().then((value) => initOrders(value));
   }
 
-  List<Order> _listOrder = <Order>[];
+  List<Order> _lsOrder = <Order>[];
+  List<Order> _lsOrderStorage = <Order>[];
+  List<String> _lsBroker = <String>[];
+  String _strCurrentBroker = "";
+  DateTime _dtLoadDate = DateTime.now();
+  int _iCurrentOrder = -1;
 
-  void initOrders(List<Order> listOrder) {
+  void initOrders(List<Order> lsOrder) {
     setState(() {
-      _listOrder = listOrder;
+      _lsOrderStorage = lsOrder;
+      _lsOrder = lsOrder;
+      _lsBroker = lsOrder.map((m) => m.broker).toSet().toList();
+      _lsBroker.sort();
+      _lsBroker.insert(0, widget.defaultBroker);
+      _strCurrentBroker = widget.defaultBroker;
+      _dtLoadDate = DateTime.now();
     });
   }
 
-  String _strTypeView = 'list';
-  bool _isSwitched = true;
-
-  /*
-  *
-  *   Event Switch
-  *
-  */
-  void _changeView(value) {
-    setState(() {
-      _isSwitched = value ?? false;
-    });
-    _strTypeView = (_isSwitched) ? 'list' : 'grid';
-  }
-
-  /*
-  *
-  *  Work item element
-  *
-  */
-  Widget _containerItemOrder(int index, Order itemOrder) {
-    return Dismissible(
-      key: UniqueKey(),
-      onDismissed: (direction) {
-        if (direction == DismissDirection.startToEnd) {
-          setState(() {
-            _listOrder.removeAt(index);
-          });
-        } else if (direction == DismissDirection.endToStart) {
-          // to do
-          setState(() {});
-        }
-      },
-      background: Container(
-        alignment: Alignment.center,
-        child: const Icon(
-          Icons.delete,
-          color: Colors.black
-        ),
-      ),
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10),
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('No: ${itemOrder.number}', style: const TextStyle(fontSize: 22)),
-            //Text('Name: ${itemOrder.name}', style: const TextStyle(fontSize: 18))
-          ]
-        )
-      )
-    );
-  }
-
-  /*
-  *
-  * Work view
-  *
-   */
-  Widget _buildView() {
-    switch(_strTypeView) {
-      case 'list':
-        return ListView.builder(
-          itemCount: _listOrder.length,
-          itemBuilder: (context, index) {
-            return _containerItemOrder(index, _listOrder[index]);
-          }
-        );
-      case 'grid':
-        return GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount (
-            crossAxisCount: 2,
-            mainAxisSpacing: 5.0,
-            crossAxisSpacing: 5.0,
-            mainAxisExtent: 150.0,
+  Widget _buildItemContainer(index) => SizedBox(
+        child: GestureDetector(
+          onTap: () => {setState(() {
+            _iCurrentOrder = index;
+          })},
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: <Color>[
+                  Colors.black.withAlpha(0),
+                  Colors.black12,
+                  Colors.black26
+                ],
+              ),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'No: ${_lsOrder[index].number}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'From: ${_lsOrder[index].pickup.state}, ${_lsOrder[index].pickup.city}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'To: ${_lsOrder[index].drop.state}, ${_lsOrder[index].drop.city}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'Weight: ${_lsOrder[index].weight}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
-          itemCount: _listOrder.length,
-          itemBuilder: (context, index) {
-            return Container(
-              child: _containerItemOrder(index, _listOrder[index])
-            );
-          },
-        );
-      default:
-        return ListView().build(context);
+        ),
+      );
 
-    }
-  }
+  Widget _buildGrid() => SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return _buildItemContainer(index);
+          },
+          childCount: _lsOrder.length,
+        ),
+        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200.0,
+          mainAxisSpacing: 10.0,
+          crossAxisSpacing: 10.0,
+          mainAxisExtent: 80
+
+        ),
+      );
+
+  Widget _buildList() => SliverList(
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return _buildItemContainer(index);
+          },
+          childCount: _lsOrder.length,
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         title: Text(widget.title),
       ),
-
-      body: CustomScrollView(
-        slivers: [
-          SliverGrid(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Container(
-                  alignment: Alignment.center,
-                  //color: CupertinoColors.teal[100 * (index % 9)],
-                  child: Text('grid item $index'),
-                );
-              },
-              childCount: 50,
-            ),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-            ),
-          ),
-        ],
-      ),
-    );
-
-/*
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-          middle: Text(widget.title)
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: [
-            Row(
+      drawer: Builder(
+        builder: (BuildContext context) {
+          return Drawer(
+            width: 300,
+            child: ListView(
               children: [
-                const Text('Is ListView? '),
-                CupertinoSwitch(
-                  value: _isSwitched,
-                    activeColor: CupertinoColors.activeBlue,
-                  onChanged: _changeView
+                const SizedBox(
+                  height: 64.0,
+                  child: DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.white60,
+                    ),
+                    child: Text('Broker company'),
+                  ),
                 ),
-
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  child: ListView.builder(
+                      itemCount: _lsBroker.length,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.vertical,
+                      itemBuilder: (context, index) {
+                        return InkWell(
+                          onTap: () {
+                            setState(() {
+                              _strCurrentBroker = _lsBroker[index];
+                              _lsOrder = _lsOrderStorage
+                                  .where((element) => ((_strCurrentBroker ==
+                                          widget.defaultBroker) ||
+                                      (element.broker == _strCurrentBroker)))
+                                  .toList();
+                            });
+                            Scaffold.of(context).closeDrawer();
+                          },
+                          child: Chip(
+                            label: Row(
+                              children: [
+                                SizedBox(
+                                  width: 250,
+                                  child: Text(_lsBroker[index]),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 25.0, vertical: 30.0),
+                  child: TextButton(
+                    onPressed: () {
+                      Scaffold.of(context).closeDrawer();
+                    },
+                    child: const Text("Close"),
+                  ),
+                ),
               ],
             ),
-            Expanded(
-              child: _buildView()
-            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => InfoMessage(
+                title: 'Info', message: 'Current broker: $_strCurrentBroker'),
+          )
+        },
+        child: const Icon(Icons.info),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/truck.png"),
+            fit: BoxFit.cover,
+            opacity: 0.05,
+          ),
+        ),
+        child: Stack(
+          children: [
+            if (_iCurrentOrder == -1)
+              Container(
+                color: Colors.grey,
+                height: 30,
+                child: Center(
+                  child: Text(
+                      'Order information on ${DateFormat('dd.MM.yyyy HH:mm:ss').format(_dtLoadDate)}'),
+                ),
+              ),
+            if (_iCurrentOrder == -1)
+              Container(
+                padding: const EdgeInsets.only(
+                    top: 40, left: 10, right: 10, bottom: 10),
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints constraints) {
+                    if (constraints.maxWidth < 600) {
+                      return CustomScrollView(
+                        slivers: [
+                          _buildList(),
+                        ],
+                      );
+                    } else {
+                      return CustomScrollView(
+                        slivers: [
+                          _buildGrid(),
+                        ],
+                      );
+                    }
+                  },
+                ),
+              ),
+            if (_iCurrentOrder != -1)
+              Container(
+                padding: const EdgeInsets.only(
+                    top: 40, left: 10, right: 10, bottom: 10),
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    Text(
+                      'No: ${_lsOrder[_iCurrentOrder].number}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Text('===='),
+                    Text(
+                      'Pick up location: ${_lsOrder[_iCurrentOrder].pickup.state}, ${_lsOrder[_iCurrentOrder].pickup.city}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      _lsOrder[_iCurrentOrder].pickup.address,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Text('===='),
+                    Text(
+                      'Drop location: ${_lsOrder[_iCurrentOrder].drop.state}, ${_lsOrder[_iCurrentOrder].drop.city}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      _lsOrder[_iCurrentOrder].drop.address,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Text('===='),
+                    Text(
+                      'Weight: ${_lsOrder[_iCurrentOrder].weight}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Text('===='),
+                    Text(
+                      'Broker: ${_lsOrder[_iCurrentOrder].broker}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const Text('===='),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _iCurrentOrder = -1;
+                        });
+                      },
+                      child: const Text("Close"),
+                    ),
+                  ],
+                ),
+              )
           ],
-        )
+        ),
       ),
     );
-
-    */
   }
 }
