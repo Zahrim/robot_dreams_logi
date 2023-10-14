@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:robot_dreams_logi/domain/models/order.dart';
-import 'package:robot_dreams_logi/presentation/screens/order_list/widgets/widgets.dart';
 import 'package:robot_dreams_logi/presentation/screens/order_list/controllers/controllers.dart';
 import 'package:robot_dreams_logi/presentation/widgets/widgets.dart';
+import 'package:robot_dreams_logi/presentation/screens/profile/profile.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key, required this.title});
 
-  static const String _strAllBroker= 'All Brokers' ;
+  static const String _strAllBroker = 'All Brokers';
 
   String get defaultBroker => _strAllBroker;
 
@@ -45,9 +46,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   Widget _buildItemContainer(index) => SizedBox(
         child: GestureDetector(
-          onTap: () => {setState(() {
-            _iCurrentOrder = index;
-          })},
+          onTap: () => {
+            setState(() {
+              _iCurrentOrder = index;
+            })
+          },
           child: Container(
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
@@ -97,8 +100,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
           maxCrossAxisExtent: 200.0,
           mainAxisSpacing: 10.0,
           crossAxisSpacing: 10.0,
-          mainAxisExtent: 80
-
+          mainAxisExtent: 90,
         ),
       );
 
@@ -116,6 +118,19 @@ class _OrderListScreenState extends State<OrderListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ProfileScreen(
+                      title: AppLocalizations.of(context)!.profile),
+                ),
+              );
+            },
+            icon: const Icon(Icons.settings),
+          ),
+        ],
       ),
       drawer: Builder(
         builder: (BuildContext context) {
@@ -123,13 +138,14 @@ class _OrderListScreenState extends State<OrderListScreen> {
             width: 300,
             child: ListView(
               children: [
-                const SizedBox(
+                SizedBox(
                   height: 64.0,
                   child: DrawerHeader(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       color: Colors.white60,
                     ),
-                    child: Text('Broker company'),
+                    child:
+                        Text('${AppLocalizations.of(context)?.broker_company}'),
                   ),
                 ),
                 Padding(
@@ -171,7 +187,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     onPressed: () {
                       Scaffold.of(context).closeDrawer();
                     },
-                    child: const Text("Close"),
+                    child: Text("${AppLocalizations.of(context)?.close}"),
                   ),
                 ),
               ],
@@ -205,7 +221,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 height: 30,
                 child: Center(
                   child: Text(
-                      'Order information on ${DateFormat('dd.MM.yyyy HH:mm:ss').format(_dtLoadDate)}'),
+                      '${AppLocalizations.of(context)?.order_information_on} ${DateFormat('dd.MM.yyyy HH:mm:ss').format(_dtLoadDate)}'),
                 ),
               ),
             if (_iCurrentOrder == -1)
