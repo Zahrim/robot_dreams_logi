@@ -187,7 +187,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     onPressed: () {
                       Scaffold.of(context).closeDrawer();
                     },
-                    child: Text("${AppLocalizations.of(context)?.close}"),
+                    child: Text(AppLocalizations.of(context)!.close),
                   ),
                 ),
               ],
@@ -299,7 +299,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     ),
                   ],
                 ),
-              )
+              ),
           ],
         ),
       ),

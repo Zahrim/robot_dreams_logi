@@ -19,7 +19,7 @@ class Application extends StatelessWidget {
 
     ThemeData customTheme = baseTheme.copyWith(
       textTheme: baseTheme.textTheme.copyWith(
-        bodyMedium: baseTheme.textTheme.titleLarge?.copyWith(
+        bodyMedium: baseTheme.textTheme.titleLarge!.copyWith(
           fontFamily: GoogleFonts.nunito().fontFamily,
         ),
         titleLarge: baseTheme.textTheme.titleLarge!.copyWith(
