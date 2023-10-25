@@ -1,0 +1,1 @@
+export 'package:robot_dreams_logi/presentation/screens/profile/views/profile.dart';
