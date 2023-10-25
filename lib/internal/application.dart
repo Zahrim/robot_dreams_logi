@@ -22,7 +22,7 @@ class Application extends StatelessWidget {
       themeMode: (settings.isThemeBlack) ? ThemeMode.dark : ThemeMode.light,
       title: _title,
       theme: ThemeData(
-        //useMaterial3: true,
+        useMaterial3: true,
         brightness: Brightness.light,
         textTheme: TextTheme(
           bodyMedium: ThemeData.light().textTheme.bodyMedium!.copyWith(
