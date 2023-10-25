@@ -14,27 +14,43 @@ class Application extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final settings = context.watch<Settings>();
-    ThemeData baseTheme =
-        (settings.isThemeBlack) ? ThemeData.dark() : ThemeData.light();
-
-    ThemeData customTheme = baseTheme.copyWith(
-      textTheme: baseTheme.textTheme.copyWith(
-        bodyMedium: baseTheme.textTheme.titleLarge!.copyWith(
-          fontFamily: GoogleFonts.nunito().fontFamily,
-        ),
-        titleLarge: baseTheme.textTheme.titleLarge!.copyWith(
-            fontFamily: GoogleFonts.roboto().fontFamily, fontSize: 35),
-      ),
-    );
 
     return MaterialApp(
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       locale: Locale(settings.currentLocale),
+      themeMode: (settings.isThemeBlack) ? ThemeMode.dark : ThemeMode.light,
       title: _title,
-      theme: customTheme,
+      theme: ThemeData(
+        //useMaterial3: true,
+        brightness: Brightness.light,
+        textTheme: TextTheme(
+          bodyMedium: ThemeData.light().textTheme.bodyMedium!.copyWith(
+                fontFamily: GoogleFonts.nunito().fontFamily,
+              ),
+          titleLarge: ThemeData.light().textTheme.titleLarge!.copyWith(
+                fontFamily: GoogleFonts.roboto().fontFamily,
+                fontSize: 35,
+              ),
+        ),
+      ),
+      darkTheme: ThemeData(
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        textTheme: TextTheme(
+          bodyMedium: ThemeData.dark().textTheme.bodyMedium!.copyWith(
+                fontFamily: GoogleFonts.nunito().fontFamily,
+              ),
+          titleLarge: ThemeData.dark().textTheme.titleLarge!.copyWith(
+                fontFamily: GoogleFonts.roboto().fontFamily,
+                fontSize: 35,
+              ),
+        ),
+      ),
       //home: LoginScreen(title: _title),
-      home: OrderListScreen(title: _title),
+      home: OrderListScreen(
+        title: _title,
+      ),
     );
   }
 }

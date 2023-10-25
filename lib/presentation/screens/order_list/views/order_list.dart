@@ -135,7 +135,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
       drawer: Builder(
         builder: (BuildContext context) {
           return Drawer(
-            width: 300,
+            //width: 300,
             child: ListView(
               children: [
                 SizedBox(
