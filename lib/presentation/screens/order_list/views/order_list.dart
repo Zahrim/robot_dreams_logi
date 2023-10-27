@@ -1,17 +1,27 @@
+import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:robot_dreams_logi/domain/models/order.dart';
-import 'package:robot_dreams_logi/presentation/screens/order_list/controllers/controllers.dart';
+import 'package:robot_dreams_logi/domain/repositories/order.dart';
 import 'package:robot_dreams_logi/presentation/widgets/widgets.dart';
 import 'package:robot_dreams_logi/presentation/screens/profile/profile.dart';
+import 'package:robot_dreams_logi/presentation/screens/order_list/controllers/controllers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OrderListScreen extends StatefulWidget {
   const OrderListScreen({super.key, required this.title});
 
   static const String _strAllBroker = 'All Brokers';
+  static const String _strWaiting = 'Waiting for Vehicle';
+  static const String _strPickUp = 'Pick Up';
 
   String get defaultBroker => _strAllBroker;
+
+  String get waiting => _strWaiting;
+
+  String get pickUp => _strPickUp;
 
   final String title;
   final String broker = _strAllBroker;
@@ -21,35 +31,71 @@ class OrderListScreen extends StatefulWidget {
 }
 
 class _OrderListScreenState extends State<OrderListScreen> {
-  _OrderListScreenState() {
-    loadOrders().then((value) => initOrders(value));
+  late OrderRepository _repository;
+  late List<Order> _lsOrder;
+  late List<Order> _lsOrderStorage;
+  late List<String> _lsBroker;
+  late String _strCurrentBroker;
+  late DateTime _dtLoadDate;
+  late int _iCurrentOrder;
+
+  late StreamController<List<Order>> _controller;
+  late StreamController<int> _controllerCounter;
+
+  @override
+  void initState() {
+    _repository = OrderRepository();
+    _lsBroker = <String>[];
+    _lsOrderStorage = <Order>[];
+    _strCurrentBroker = widget.defaultBroker;
+    _dtLoadDate = DateTime.now();
+    _iCurrentOrder = -1;
+    _lsOrder = List.empty(growable: true);
+
+    _controller = StreamController();
+    _controllerCounter = StreamController();
+
+    compute(setCountPickUpOrders, _lsOrderStorage);
+
+    super.initState();
   }
 
-  List<Order> _lsOrder = <Order>[];
-  List<Order> _lsOrderStorage = <Order>[];
-  List<String> _lsBroker = <String>[];
-  String _strCurrentBroker = "";
-  DateTime _dtLoadDate = DateTime.now();
-  int _iCurrentOrder = -1;
+  @override
+  void dispose() {
+    _controller.close();
+    super.dispose();
+  }
 
-  void initOrders(List<Order> lsOrder) {
-    setState(() {
-      _lsOrderStorage = lsOrder;
-      _lsOrder = lsOrder;
-      _lsBroker = lsOrder.map((m) => m.broker).toSet().toList();
-      _lsBroker.sort();
-      _lsBroker.insert(0, widget.defaultBroker);
-      _strCurrentBroker = widget.defaultBroker;
-      _dtLoadDate = DateTime.now();
-    });
+  void setOrders(List<Order> lsOrder) {
+    _lsOrderStorage = lsOrder;
+    _lsOrder = _lsOrderStorage
+        .where((element) => ((_strCurrentBroker == widget.defaultBroker) ||
+            (element.broker == _strCurrentBroker)))
+        .toList();
+
+    _lsBroker = lsOrder.map((m) => m.broker).toSet().toList();
+    _lsBroker.sort();
+    _lsBroker.insert(0, widget.defaultBroker);
+
+    compute(setCountPickUpOrders, _lsOrderStorage)
+        .then((value) => {_controllerCounter.sink.add(value)});
+
+    _controller.sink.add(_lsOrder);
+  }
+
+  void changeStatus(index) {
+    _lsOrder[index].status = (_lsOrder[index].status == widget.pickUp)
+        ? widget.waiting
+        : widget.pickUp;
+    _controller.sink.add(_lsOrder);
+    compute(setCountPickUpOrders, _lsOrderStorage)
+        .then((value) => {_controllerCounter.sink.add(value)});
   }
 
   Widget _buildItemContainer(index) => SizedBox(
         child: GestureDetector(
           onTap: () => {
-            setState(() {
-              _iCurrentOrder = index;
-            })
+            changeStatus(index),
           },
           child: Container(
             padding: const EdgeInsets.all(5),
@@ -81,6 +127,10 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 ),
                 Text(
                   'Weight: ${_lsOrder[index].weight}',
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  'Status: ${_lsOrder[index].status}',
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -157,14 +207,13 @@ class _OrderListScreenState extends State<OrderListScreen> {
                       itemBuilder: (context, index) {
                         return InkWell(
                           onTap: () {
-                            setState(() {
-                              _strCurrentBroker = _lsBroker[index];
-                              _lsOrder = _lsOrderStorage
-                                  .where((element) => ((_strCurrentBroker ==
-                                          widget.defaultBroker) ||
-                                      (element.broker == _strCurrentBroker)))
-                                  .toList();
-                            });
+                            _strCurrentBroker = _lsBroker[index];
+                            _lsOrder = _lsOrderStorage
+                                .where((element) => ((_strCurrentBroker ==
+                                        widget.defaultBroker) ||
+                                    (element.broker == _strCurrentBroker)))
+                                .toList();
+                            _controller.sink.add(_lsOrder);
                             Scaffold.of(context).closeDrawer();
                           },
                           child: Chip(
@@ -182,7 +231,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: 25.0, vertical: 30.0),
+                    horizontal: 25.0,
+                    vertical: 30.0,
+                  ),
                   child: TextButton(
                     onPressed: () {
                       Scaffold.of(context).closeDrawer();
@@ -200,7 +251,9 @@ class _OrderListScreenState extends State<OrderListScreen> {
           showDialog(
             context: context,
             builder: (BuildContext context) => InfoMessage(
-                title: 'Info', message: 'Current broker: $_strCurrentBroker'),
+              title: 'Info',
+              message: 'Current broker: $_strCurrentBroker',
+            ),
           )
         },
         child: const Icon(Icons.info),
@@ -220,21 +273,71 @@ class _OrderListScreenState extends State<OrderListScreen> {
                 color: Colors.grey,
                 height: 30,
                 child: Center(
-                  child: Text(
-                      '${AppLocalizations.of(context)?.order_information_on} ${DateFormat('dd.MM.yyyy HH:mm:ss').format(_dtLoadDate)}'),
+                  child: StreamBuilder(
+                      stream: _controllerCounter.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.red,
+                            ),
+                          );
+                        } else {
+                          return Text(
+                            '${AppLocalizations.of(context)!.count_orders}: ${snapshot.data}',
+                          );
+                        }
+                      }),
                 ),
               ),
             if (_iCurrentOrder == -1)
               Container(
                 padding: const EdgeInsets.only(
-                    top: 40, left: 10, right: 10, bottom: 10),
+                  top: 40,
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
+                ),
                 child: LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) {
                     if (constraints.maxWidth < 600) {
-                      return CustomScrollView(
-                        slivers: [
-                          _buildList(),
-                        ],
+                      return FutureBuilder(
+                        future: _repository.fetchOrders(),
+                        //initialData: const <Order>[],
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.blue,
+                              ),
+                            );
+                          } else {
+                            //_controller.bro.close();
+                            setOrders(snapshot.data!.toList());
+
+                            return StreamBuilder(
+                              stream: _controller.stream,
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.red,
+                                    ),
+                                  );
+                                } else {
+                                  return CustomScrollView(
+                                    slivers: [
+                                      _buildList(),
+                                    ],
+                                  );
+                                }
+                              },
+                            );
+                          }
+                        },
                       );
                     } else {
                       return CustomScrollView(
@@ -249,7 +352,11 @@ class _OrderListScreenState extends State<OrderListScreen> {
             if (_iCurrentOrder != -1)
               Container(
                 padding: const EdgeInsets.only(
-                    top: 40, left: 10, right: 10, bottom: 10),
+                  top: 40,
+                  left: 10,
+                  right: 10,
+                  bottom: 10,
+                ),
                 alignment: Alignment.center,
                 child: Column(
                   children: [
@@ -291,9 +398,10 @@ class _OrderListScreenState extends State<OrderListScreen> {
                     ),
                     TextButton(
                       onPressed: () {
-                        setState(() {
-                          _iCurrentOrder = -1;
-                        });
+                        //setState(() {
+                        _iCurrentOrder = -1;
+                        //}
+                        //);
                       },
                       child: const Text("Close"),
                     ),
