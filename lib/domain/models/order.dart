@@ -1,22 +1,16 @@
 import 'package:robot_dreams_logi/domain/models/location.dart';
 
 class Order {
-  late String _strNumber;
-  late String _strBroker;
-  late double _dWeight;
-  late Location _lPickUp;
-  late Location _lDrop;
+  final String _strNumber;
+  final String _strBroker;
+  final double _dWeight;
+  final Location _lPickUp;
+  final Location _lDrop;
   late String status;
 
-  Order(String number, String broker, double weight, Location pickup,
-      Location drop) {
-    _strNumber = number;
-    _strBroker = broker;
-    _dWeight = weight;
-    _lPickUp = pickup;
-    _lDrop = drop;
-    status = 'Waiting for Vehicle';
-  }
+  Order(this._strNumber, this._strBroker, this._dWeight, this._lPickUp,
+      this._lDrop)
+      : status = 'Waiting for Vehicle';
 
   String get number => _strNumber;
 

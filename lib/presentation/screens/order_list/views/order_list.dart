@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:robot_dreams_logi/data/api/order.dart';
 import 'package:robot_dreams_logi/domain/models/order.dart';
 import 'package:robot_dreams_logi/domain/repositories/order.dart';
 import 'package:robot_dreams_logi/presentation/widgets/widgets.dart';
@@ -44,7 +45,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
 
   @override
   void initState() {
-    _repository = OrderRepository();
+    _repository = OrderRepository(OrderAPI());
     _lsBroker = <String>[];
     _lsOrderStorage = <Order>[];
     _strCurrentBroker = widget.defaultBroker;

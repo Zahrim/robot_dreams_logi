@@ -4,11 +4,9 @@ import 'package:robot_dreams_logi/domain/models/location.dart';
 import 'package:robot_dreams_logi/domain/models/order.dart';
 
 class OrderRepository {
-  late OrderAPI _api;
+  final OrderAPI _api;
 
-  OrderRepository() {
-    _api = OrderAPI();
-  }
+  OrderRepository(this._api);
 
   Future<List<Order>> fetchOrders() async {
     List<OrderData> lsOrderData = await _api.getOrders();
