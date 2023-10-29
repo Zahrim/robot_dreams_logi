@@ -56,7 +56,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
     _controller = StreamController();
     _controllerCounter = StreamController();
 
-    compute(setCountPickUpOrders, _lsOrderStorage);
+    compute(getCountPickUpOrders, _lsOrderStorage);
 
     super.initState();
   }
@@ -78,7 +78,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
     _lsBroker.sort();
     _lsBroker.insert(0, widget.defaultBroker);
 
-    compute(setCountPickUpOrders, _lsOrderStorage)
+    compute(getCountPickUpOrders, _lsOrderStorage)
         .then((value) => {_controllerCounter.sink.add(value)});
 
     _controller.sink.add(_lsOrder);
@@ -89,7 +89,7 @@ class _OrderListScreenState extends State<OrderListScreen> {
         ? widget.waiting
         : widget.pickUp;
     _controller.sink.add(_lsOrder);
-    compute(setCountPickUpOrders, _lsOrderStorage)
+    compute(getCountPickUpOrders, _lsOrderStorage)
         .then((value) => {_controllerCounter.sink.add(value)});
   }
 

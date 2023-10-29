@@ -6,7 +6,7 @@ int setCountOrders(List<Order> lsOrders, String strStatus) {
   return -1;
 }
 */
-int setCountPickUpOrders(List<Order> lsOrders) {
+int getCountPickUpOrders(List<Order> lsOrders) {
   //int i = 1;
   return lsOrders.where((element) => (element.status == 'Pick Up')).length;
 }

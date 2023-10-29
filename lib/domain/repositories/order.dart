@@ -11,23 +11,17 @@ class OrderRepository {
   Future<List<Order>> fetchOrders() async {
     List<OrderData> lsOrderData = await _api.getOrders();
 
-    List<Order> lsOrder = <Order>[];
-
-    for (var item in lsOrderData) {
-      lsOrder.add(
-        Order(
-          item.number,
-          item.broker,
-          item.weight,
-          Location(item.pickup.zip, item.pickup.state, item.pickup.city,
-              item.pickup.address, item.pickup.lat, item.pickup.lng),
-          Location(item.drop.zip, item.drop.state, item.drop.city,
-              item.drop.address, item.drop.lat, item.drop.lng),
-        ),
-      );
-    }
-
-    return lsOrder;
+    return lsOrderData
+        .map((item) => Order(
+              item.number,
+              item.broker,
+              item.weight,
+              Location(item.pickup.zip, item.pickup.state, item.pickup.city,
+                  item.pickup.address, item.pickup.lat, item.pickup.lng),
+              Location(item.drop.zip, item.drop.state, item.drop.city,
+                  item.drop.address, item.drop.lat, item.drop.lng),
+            ))
+        .toList();
   }
 
   Stream<Order> updateOrder(Order order, String status) async* {
