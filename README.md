@@ -15,3 +15,6 @@ Lesson 9
 
 Lesson 10
 [Lesson 10](doc/lesson_10.gif)
+
+Lesson 12
+[Lesson 12](doc/lesson_12.gif)

@@ -4,5 +4,6 @@
   "order_information_on": "Інформація за замовленнями на",
   "broker_company": "Брокерські компанії",
   "close": "Закрити",
-  "all_brokers": "Всі брокери"
+  "all_brokers": "Всі брокери",
+  "count_orders": "Кількість заказів"
 }

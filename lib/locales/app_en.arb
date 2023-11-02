@@ -4,5 +4,6 @@
   "order_information_on": "Order information on",
   "broker_company": "Broker company",
   "close": "Close",
-  "all_brokers": "All Brokers"
+  "all_brokers": "All Brokers",
+  "count_orders": "Count orders"
 }
